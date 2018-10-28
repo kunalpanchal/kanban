@@ -24,7 +24,9 @@
     margin: 0px;
     height: auto;
     margin-bottom: 12px;
-    background-color: #fffff8
+    background-color: #fffff8;
+    white-space: normal;
+    z-index: 2;
 }
 
 .fab {
@@ -32,6 +34,15 @@
     z-index: 999;
     bottom: 20px;
     right: 20px;
+}
+
+.space {
+    margin-left: 30px
+}
+
+.droppable {
+    height: 87vh;
+    overflow-y: scroll
 }
 
 /* The Modal (background) */

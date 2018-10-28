@@ -10,7 +10,7 @@ declare var window: any;
 })
 export class AppComponent implements OnInit, AfterViewInit {
   constructor(public snackBar: MatSnackBar) { }
-
+  tempProjectName: string;
   title = 'kanban';
   newProjectStatus: string;
   statuses: ['pending', 'done', 'To-do', 'In Progress'];
@@ -21,93 +21,83 @@ export class AppComponent implements OnInit, AfterViewInit {
       index: 0
     }
   }
-  boards: any = [
-    {
-      name: 'Planning',
-      color: '#fac49f',
-      projects: [{
-        name: 'Game of Thrones',
-        description: 'jkhfjkhsadf',
-        status: 'pending'
-      }]
-    },
-    {
-      name: 'Pitching',
-      color: '#ffcccb',
-      projects: [{
-        name: 'Game of Thrones',
-        description: 'jkhfjkhsadf',
-        status: 'pending'
-      }]
-    },
-    {
-      name: 'OnGoing',
-      color: '#ffc4ff',
-      projects: []
-    },
-    {
-      name: 'Post Production',
-      color: '#c3fdff',
-      projects: []
-    },
-    {
-      name: 'Complete',
-      color: '#d7ffd9',
-      projects: []
-    }, {
-      name: 'Testing',
-      color: '#b4ffff',
-      projects: []
-    }]
+  boards: any;
   ngOnInit() {
-
-    // jQuery("mat-card-board, div").disableSelection();
-    // jQuery(".mat-card-board").draggable({
-    //   // appendTo: 'body',
-    //   zIndex: 99999999,
-    //   connectToSortable: ".mat-card-board",
-    //   containment: 'document',
-    //   scroll: false,
-    //   // revert: true,
-    //   helper: "clone"
-    // });
+    let boards = localStorage.getItem('boards');
+    if (boards) this.boards = JSON.parse(boards);
+    else this.boards = [
+      {
+        name: 'Planning',
+        color: '#fac49f',
+        projects: [{
+          name: 'Game of Thrones',
+          description: 'jkhfjkhsadf',
+          status: 'pending'
+        }]
+      },
+      {
+        name: 'Pitching',
+        color: '#ffcccb',
+        projects: []
+      },
+      {
+        name: 'OnGoing',
+        color: '#ffc4ff',
+        projects: []
+      },
+      {
+        name: 'Post Production',
+        color: '#c3fdff',
+        projects: []
+      },
+      {
+        name: 'Complete',
+        color: '#d7ffd9',
+        projects: []
+      }, {
+        name: 'Testing',
+        color: '#b4ffff',
+        projects: []
+      }]
   }
 
+  save() {
+    localStorage.setItem('boards', JSON.stringify(this.boards));
+  }
   ngAfterViewInit() {
     this.initDrag()
   }
   initDrag() {
+    let that = this;
+    let start
     jQuery(".droppable").sortable({
       connectWith: ".droppable",
-      /*stop: function(event, ui) {
-          var item_sortable_list_id = $(this).attr('id');
-          console.log(ui);
-          //alert($(ui.sender).attr('id'))
-      },*/
-      update: function () {
-        console.log('aa')
-        // do stuff
+      start: function (event, ui) {
+        let id = jQuery(this).attr('id');
+        if (!start) start = id.split('-')[2]
       },
       receive: function (event, ui) {
-        console.log('vv', event, ui)
-
-      }
+        let id = jQuery(this).attr('id');
+        that.snackBar.open(`Project ${that.tempProjectName} moved from ${that.boards[start].name} to ${that.boards[id.split('-')[2]].name}`, 'a', { duration: 1000 })
+        start = undefined
+      },
     }).disableSelection();;
 
     jQuery(".project-card").draggable({
-      // handle: "i",
       cancel: "div.testtt",
       connectToSortable: '.droppable',
-      // helper: 'clone'
       scroll: false,
       revert: true,
       zIndex: 99999999,
-
+      start: function (e, ui) {
+        let id = jQuery(this).attr('id');
+        let [boardIndex, projectIndex] = [id.split('-')[1], id.split('-')[2]]
+        that.tempProjectName = that.boards[boardIndex].projects[projectIndex].name;
+      }
     });
   }
 
   addNewProject(event: any, name: string, description: string) {
-
     event.preventDefault()
     if (!name) {
       this.snackBar.open('Please enter name for the project');
@@ -124,6 +114,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     })
     this.modal.hidden = true;
     this.snackBar.open(`New Project Successfully Added to ${this.boards[0].name}`);
+    this.save();
   }
 
   addNewBoard(name: string, color: any) {
@@ -140,6 +131,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.modal.hidden = true
     setTimeout(() => jQuery('.kanban').scrollLeft(Number.MAX_SAFE_INTEGER))
     this.snackBar.open(`New Board ${name} Added`);
+    this.save();
   }
 
   editProject(name) {
@@ -150,5 +142,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
     this.boards[this.modal.data.index].name = name;
     this.modal.hidden = true
+    this.save();
   }
 }

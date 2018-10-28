@@ -1,25 +1,25 @@
-<div style="background-color: #414A4C;width: 100%;height: 100%;"></div>
+<!-- <div style="background-color: #414A4C;width: 100%;height: 100%;"></div> -->
 
 <!-- The Modal -->
 <div id="myModal" class="modal" *ngIf="!modal.hidden">
   <div class="modal-content">
     <span class="close" (click)="modal.hidden=true">&times;</span>
     <h2>{{modal.type=='add'?'Administer the Kanban':'Edit Board'}}</h2>
-
+    <!-- Add Modal -->
     <form *ngIf="modal.type=='add'">
       <mat-card style="height: auto;margin:15px;background-color: palegoldenrod">
         <mat-form-field>
           <input matInput placeholder="Board Title" #newBoardTitle>
         </mat-form-field>
-        <input type="color" id="myColor" value="#ffc4ff" #newProjectColor style="margin-left: 30px">
-        <button mat-raised-button color="primary" style="margin-left: 30px" (click)="addNewBoard(newBoardTitle.value,newProjectColor.value)">Add new Board</button>
+        <input type="color" id="myColor" value="#ffc4ff" #newProjectColor class="space">
+        <button mat-raised-button color="primary" class="space" (click)="addNewBoard(newBoardTitle.value,newProjectColor.value)">Add new Board</button>
       </mat-card>
 
       <mat-card style="height: auto;margin:15px;background-color: palegoldenrod">
         <mat-form-field>
           <input matInput placeholder="Project Title" #newProjectTitle>
         </mat-form-field>
-        <button mat-raised-button color="primary" style="margin-left: 30px" (click)="addNewProject($event,newProjectTitle.value,newProjectDescription.value)"
+        <button mat-raised-button color="primary" class="space" (click)="addNewProject($event,newProjectTitle.value,newProjectDescription.value)"
           href="javascript:void(0)">Add new project card</button>
         <br>
         <mat-form-field style="width:100%">
@@ -27,18 +27,16 @@
         </mat-form-field>
       </mat-card>
     </form>
-
+    <!-- Edit Modal -->
     <form *ngIf="modal.type=='edit'">
       <mat-form-field>
         <input matInput placeholder="Board Title" [(value)]="boards[modal.data.index].name" #boardTitle>
       </mat-form-field>
-      <button mat-raised-button color="primary" style="margin-left: 30px" (click)="editProject(boardTitle.value)">Edit</button>
-      <button mat-raised-button color="warn" style="margin-left: 30px" (click)="modal.hidden=true;boards.splice(modal.data.index,1)">Delete</button>
+      <button mat-raised-button color="primary" class="space" (click)="editProject(boardTitle.value)">Edit</button>
+      <button mat-raised-button color="warn" class="space" (click)="modal.hidden=true;boards.splice(modal.data.index,1)">Delete</button>
     </form>
   </div>
-
 </div>
-
 
 <button mat-fab color="primary" class="fab" (click)="modal.type='add';modal.hidden=false">+</button>
 
@@ -48,11 +46,10 @@
     <mat-card class="mat-card-board" [style.backgroundColor]="board.color">
       <h1 style="text-align: center">
         {{board.name}}
-        <i (click)="modal.data.index=i;modal.type='edit';modal.hidden=false" class="material-icons" style="cursor: pointer;;color:grey;font-size: 30px; transform:
-  translateY(6px);">settings</i>
+        <i (click)="modal.data.index=i;modal.type='edit';modal.hidden=false" class="material-icons" style="cursor: pointer;;color:grey;font-size: 30px; transform:translateY(6px);">settings</i>
       </h1>
-      <div class="droppable" style="height:87vh;overflow-y: scroll">
-        <mat-card *ngFor="let project of board.projects" class="project-card" style="white-space: normal;z-index: 2;">
+      <div class="droppable" id="board-droppable-{{i}}">
+        <mat-card *ngFor="let project of board.projects;let projectIndex=index" class="project-card" id="project-{{i}}-{{projectIndex}}">
           <h2>{{project.name}}</h2>
           <p>{{project.description}}</p>
 
