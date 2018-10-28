@@ -2,54 +2,54 @@
 
 <!-- The Modal -->
 <div id="myModal" class="modal" *ngIf="!modal.hidden">
-  <!-- Modal content -->
   <div class="modal-content">
     <span class="close" (click)="modal.hidden=true">&times;</span>
-    <h2>Administer the Kanban</h2>
+    <h2>{{modal.type=='add'?'Administer the Kanban':'Edit Board'}}</h2>
 
-    <form>
-      <mat-card style="height: auto;margin:15px">
+    <form *ngIf="modal.type=='add'">
+      <mat-card style="height: auto;margin:15px;background-color: palegoldenrod">
         <mat-form-field>
-          <input matInput placeholder="Board Title" value="Sushi">
+          <input matInput placeholder="Board Title" #newBoardTitle>
         </mat-form-field>
-        <button mat-raised-button color="primary" style="margin-left: 30px">Add new Status card</button>
+        <input type="color" id="myColor" value="#ffc4ff" #newProjectColor style="margin-left: 30px">
+        <button mat-raised-button color="primary" style="margin-left: 30px" (click)="addNewBoard(newBoardTitle.value,newProjectColor.value)">Add new Board</button>
       </mat-card>
 
-      <mat-card style="height: auto;margin:15px">
+      <mat-card style="height: auto;margin:15px;background-color: palegoldenrod">
         <mat-form-field>
-          <input matInput placeholder="Project Title" value="Sushi">
+          <input matInput placeholder="Project Title" #newProjectTitle>
         </mat-form-field>
-
-        <mat-chip-list style="margin-left: 40px">
-          <mat-chip>Pending</mat-chip>
-          <mat-chip>TO-DO</mat-chip>
-          <mat-chip color="primary" selected>DONE</mat-chip>
-          <mat-chip color="accent" selected>In-Progress</mat-chip>
-        </mat-chip-list>
+        <button mat-raised-button color="primary" style="margin-left: 30px" (click)="addNewProject($event,newProjectTitle.value,newProjectDescription.value)"
+          href="javascript:void(0)">Add new project card</button>
         <br>
-        <mat-form-field>
-          <textarea matInput placeholder="Add Project Description"></textarea>
+        <mat-form-field style="width:100%">
+          <textarea matInput placeholder="Add Project Description" #newProjectDescription></textarea>
         </mat-form-field>
-
-        <button mat-raised-button color="primary" style="margin-left: 30px">Add new project card</button>
       </mat-card>
     </form>
 
+    <form *ngIf="modal.type=='edit'">
+      <mat-form-field>
+        <input matInput placeholder="Board Title" [(value)]="boards[modal.data.index].name" #boardTitle>
+      </mat-form-field>
+      <button mat-raised-button color="primary" style="margin-left: 30px" (click)="editProject(boardTitle.value)">Edit</button>
+      <button mat-raised-button color="warn" style="margin-left: 30px" (click)="modal.hidden=true;boards.splice(modal.data.index,1)">Delete</button>
+    </form>
   </div>
 
 </div>
 
 
-<button mat-fab color="primary" class="fab" (click)="modal.hidden=!modal.hidden">+</button>
+<button mat-fab color="primary" class="fab" (click)="modal.type='add';modal.hidden=false">+</button>
 
 <!-- THE kanban Board -->
 <div class="kanban">
-
-  <div *ngFor="let board of boards" class="card">
+  <div *ngFor="let board of boards;let i=index" class="card">
     <mat-card class="mat-card-board" [style.backgroundColor]="board.color">
       <h1 style="text-align: center">
         {{board.name}}
-        <i class="material-icons" style="color:grey;font-size: 30px; transform: translateY(6px);">settings</i>
+        <i (click)="modal.data.index=i;modal.type='edit';modal.hidden=false" class="material-icons" style="cursor: pointer;;color:grey;font-size: 30px; transform:
+  translateY(6px);">settings</i>
       </h1>
       <div class="droppable" style="height:87vh;overflow-y: scroll">
         <mat-card *ngFor="let project of board.projects" class="project-card" style="white-space: normal;z-index: 2;">
@@ -68,6 +68,4 @@
       </div>
     </mat-card>
   </div>
-
-
 </div>

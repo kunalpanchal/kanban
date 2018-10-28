@@ -9,7 +9,9 @@ import { MatButtonModule } from '@angular/material';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
-import { MatChipsModule } from '@angular/material/chips';
+// import { MatChipsModule } from '@angular/material/chips';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,8 @@ import { MatChipsModule } from '@angular/material/chips';
     MatCardModule,
     MatSelectModule,
     MatInputModule,
-    MatChipsModule
+    MatRadioModule,
+    MatSnackBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]
