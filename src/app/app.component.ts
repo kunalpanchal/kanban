@@ -9,10 +9,9 @@ declare var window: any;
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, AfterViewInit {
-  constructor(public snackBar: MatSnackBar) { }
   tempProjectName: string;
-  title = 'kanban';
-  newProjectStatus: string;
+  boards: any;
+
   statuses: ['pending', 'done', 'To-do', 'In Progress'];
   modal: any = {
     hidden: true,
@@ -21,7 +20,9 @@ export class AppComponent implements OnInit, AfterViewInit {
       index: 0
     }
   }
-  boards: any;
+
+  constructor(public snackBar: MatSnackBar) { }
+
   ngOnInit() {
     let boards = localStorage.getItem('boards');
     if (boards) this.boards = JSON.parse(boards);
@@ -31,7 +32,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         color: '#fac49f',
         projects: [{
           name: 'Game of Thrones',
-          description: 'jkhfjkhsadf',
+          description: `Game of Thrones is an American fantasy drama television series created by David Benioff and D. B. Weiss.`,
           status: 'pending'
         }]
       },
